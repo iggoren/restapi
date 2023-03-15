@@ -13,30 +13,22 @@ link.addEventListener('click', () => {
     myModalNewUser.show()
 })
 
-const showData = (users) => {
+const showUsers = (users) => {
     console.log(users)
     users.forEach(user => {
         result += `
-    <tr>
-    <td>${user.id}</td>
-    <td>${user.email}</td>
-    <td>${user.age}</td>
-    <td>${user.roles}</td>
-</tr>
+    <tr class="fs-5">
+        <td>${user.id}</td>
+        <td>${user.email}</td>
+        <td>${user.age}</td>
+        <td>${user.roles.map(role=>role.role.substring(5)).join(', ')}</td>
+    </tr>
     `
     })
-//     for (let i = 0; i < data.length; i++) {
-//         result += `<tr><td>${data[i].id}</td>
-//                     <td>${data[i].email}</td>
-//                     <td>${data[i].age}</td>
-//                     <td>${data[i].roles}</td>
-//                     </tr>`
-//     }
-
     container.innerHTML = result
 }
 
 //отображение таблицы
 fetch(url).then(response => response.json())
-    .then(data => showData(data))
+    .then(data => showUsers(data))
     .catch(error => console.log(error))
