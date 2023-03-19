@@ -1,11 +1,245 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Панель администратора</title>
 </head>
+
 <body>
-Hello
-<script src="./js/main.js"></script>
+<header>
+    <nav class="navbar navbar-expand-lg bg-dark d-flex flex-row px-3 justify-content-between">
+        <div class="d-flex flex-row">
+            <div class="text-white fs-4 fw-bold pe-3" id="userMail"></div>
+            <div class="text-white fs-4 pe-3">with roles: </div>
+            <div class="text-white fs-4 pe-3"  id="userRole"></div>
+        </div>
+        <a class="s-5 btn btn-dark text-white" href="/logout">Logout</a>
+    </nav>
+</header>
+<section>
+
+
+    <div class="d-flex flex-row">
+        <nav class="nav nav-pills d-flex flex-column col-2 py-3" id="pills-tab">
+            <a class="nav-link active fs-5" id="pills-home-tab" data-bs-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Admin</a>
+            <a class="nav-link fs-5" id="pills-profile-tab" data-bs-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">User</a>
+        </nav>
+        <div class="tab-content w-100" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                <div class="pt-4 pe-5 ps-5 bg-light vh-100">
+                    <h2 class="display-5 fw-semibold">Admin panel</h2>
+                    <nav class="nav nav-tabs" id="nav-tab">
+                        <a class="nav-link active fs-5" id="nav-home-tab" data-bs-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Users table</a>
+                        <a class="nav-link fs-5" id="nav-profile-tab" data-bs-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">New User</a>
+                    </nav>
+                    <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel">
+                            <div class="bg-body">
+                                <h3 class="navbar navbar-expand-lg bg-light border rounded-top m-0 ps-4">All users</h3>
+                                <div class="bg-body border border-top-0 rounded-bottom ps-4 pe-4">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr class="fs-5">
+                                            <th scope="col">ID</th>
+                                            <th scope="col">First Name</th>
+                                            <th scope="col">Last Name</th>
+                                            <th scope="col">Age</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Role</th>
+                                            <th scope="col">Edit</th>
+                                            <th scope="col">Delete</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="usersTable"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                            <div class="bg-body">
+                                <h4 class="navbar navbar-expand-lg bg-light border rounded-top m-0 ps-4">Add new user</h4>
+                                <div class="bg-body border border-top-0 rounded-bottom d-flex justify-content-evenly">
+
+                                    <!-- Форма создания нового Юзера -->
+
+                                    <form class="form w-25 mt-4 mb-4" id="formNewUser" name="formNewUser">
+                                        <div class="row mb-2">
+                                            <label class="form-label d-flex justify-content-center fw-bold fs-5 mb-0" for="newUserName">First name</label>
+                                            <input class="form-control d-flex justify-content-center" type="text"  name="firstName"
+                                                   id="newUserName" placeholder="Enter first name" pattern=".{2,30}" required title="Имя должно содержать от 2 до 30 символов">
+                                        </div>
+                                        <div class="row mb-2">
+                                            <label class="form-label d-flex justify-content-center fw-bold fs-5 mb-0" for="newUserLastName">Last name</label>
+                                            <input class="form-control d-flex justify-content-center" type="text"  name="lastName"
+                                                   id="newUserLastName" placeholder="Enter last name" pattern=".{2,30}" required title="Имя должно содержать от 2 до 30 символов">
+                                        </div>
+                                        <div class="row mb-2">
+                                            <label class="form-label d-flex justify-content-center fw-bold fs-5 mb-0" for="newUserAge">Age</label>
+                                            <input class="form-control d-flex justify-content-center" type="number"  min="1" max="125" name="age" id="newUserAge" placeholder="Enter age">
+                                        </div>
+                                        <div class="row mb-2">
+                                            <label class="form-label d-flex justify-content-center fw-bold fs-5 mb-1" for="newUserEmail">Email</label>
+                                            <input class="form-control d-flex justify-content-center" type="email" name="email" id="newUserEmail" placeholder="name@example.com" required>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <label class="form-label d-flex justify-content-center fw-bold fs-5 mb-1" for="passwordNewUser">Password</label>
+                                            <input class="form-control d-flex justify-content-center" type="password" name="password" id="passwordNewUser" placeholder="Enter password"
+                                                   pattern=".{4,20}" required title="Пароль должен содеражать от 5 до 20 символов">
+                                        </div>
+                                        <div class="row mb-2">
+                                            <label class="form-label d-flex justify-content-center fw-bold fs-5 mb-1" for="selectNewRoles">Role</label>
+                                            <select class="form-select" aria-label="Default select" size="2" name="roles" multiple id="selectNewRoles" required>
+                                            </select>
+                                        </div>
+                                        <div class="tab_button d-flex justify-content-center">
+                                            <button type="submit" id="newUserAddButton" class="btn btn-success fs-4">Add new user</button>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                <div class="pt-4 pe-5 ps-5 bg-light vh-100">
+                <h2 class="display-5 fw-semibold">User information-page</h2>
+                    <div class="bg-body">
+                        <h3 class="navbar navbar-expand-lg bg-light border rounded-top m-0 ps-4">About user</h3>
+                        <div class="bg-body border border-top-0 rounded-bottom ps-4 pe-4">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr class="fs-5">
+                                    <th scope="col">ID</th>
+                                    <th scope="col">First Name</th>
+                                    <th scope="col">Last Name</th>
+                                    <th scope="col">Age</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Role</th>
+                                </tr>
+                                </thead>
+                                <tbody id ="userTable"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Модальное окно для редактирования -->
+
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Edit user</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body d-flex justify-content-center">
+
+                <!-- Форма редактирования Юзера -->
+
+                <form class="form w-50 mt-4 mb-4" id="formEditUser">
+                    <div class="row mb-2">
+                        <label class="form-label d-flex justify-content-center fw-bold fs-5 mb-0" for="idUpdate">ID</label>
+                        <input class="form-control d-flex justify-content-center" type="text" id="idUpdate" name="editId" disabled>
+                    </div>
+                    <div class="row mb-2">
+                        <label class="form-label d-flex justify-content-center fw-bold fs-5 mb-0" for="nameUpdate">First name</label>
+                        <input class="form-control d-flex justify-content-center" type="text"  id="nameUpdate" name="firstNameEdit" pattern=".{2,30}" required title="Имя должно содержать от 2 до 30 символов">
+                    </div>
+                    <div class="row mb-2">
+                        <label class="form-label d-flex justify-content-center fw-bold fs-5 mb-0" for="lastnameUpdate">Last name</label>
+                        <input class="form-control d-flex justify-content-center" type="text" id="lastnameUpdate" name="lastNameEdit" pattern=".{2,30}" required title="Имя должно содержать от 2 до 30 символов">
+                    </div>
+                    <div class="row mb-2">
+                        <label class="form-label d-flex justify-content-center fw-bold fs-5 mb-0" for="ageUpdate">Age</label>
+                        <input class="form-control d-flex justify-content-center" type="number"  min="1" max="125" id="ageUpdate" name="ageEdit">
+                    </div>
+                    <div class="row mb-2">
+                        <label class="form-label d-flex justify-content-center fw-bold fs-5 mb-1" for="emailUpdate">Email</label>
+                        <input class="form-control d-flex justify-content-center" type="email" id="emailUpdate" name="emailEdit" required>
+
+                    </div>
+                    <div class="row mb-2">
+                        <label class="form-label d-flex justify-content-center fw-bold fs-5 mb-1" for="passwordUpdate">Password</label>
+                        <input class="form-control d-flex justify-content-center" type="password" id="passwordUpdate" name="passwordEdit">
+                    </div>
+                    <div class="row mb-2">
+                        <label class="form-label d-flex justify-content-center fw-bold fs-5 mb-1" for="selectUpdateRoles">Role</label>
+                        <select class="form-select" aria-label="Default select"  size="2" name="rolesEdit" multiple id="selectUpdateRoles" required></select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="buttonEditFormClose" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                <input form="formEditUser" class="btn btn-primary" type="submit" value="Edit">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно для удаления -->
+
+<div class="modal fade" id="delModal" tabindex="-1" aria-labelledby="delModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="delModalLabel">Delete user</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body d-flex justify-content-center">
+
+                <!-- Форма удаления Юзера -->
+
+                <form id="formDeleteUser" class="form w-50 mt-4 mb-4">
+                    <div class="row mb-2">
+                        <label class="form-label d-flex justify-content-center fw-bold fs-5 mb-0" for="idDel">ID</label>
+                        <input class="form-control d-flex justify-content-center" type="text" id="idDel" name="id" disabled>
+                    </div>
+                    <div class="row mb-2">
+                        <label class="form-label d-flex justify-content-center fw-bold fs-5 mb-0" for="nameDel">First name</label>
+                        <input class="form-control d-flex justify-content-center" type="text" id="nameDel" name="firstName" disabled>
+                    </div>
+                    <div class="row mb-2">
+                        <label class="form-label d-flex justify-content-center fw-bold fs-5 mb-0" for="lastnameDel">Last name</label>
+                        <input class="form-control d-flex justify-content-center" type="text" id="lastnameDel" name="lastName" disabled>
+                    </div>
+                    <div class="row mb-2">
+                        <label class="form-label d-flex justify-content-center fw-bold fs-5 mb-0" for="ageDel">Age</label>
+                        <input class="form-control d-flex justify-content-center" type="number"  min="1" max="125" id="ageDel" name="age" disabled>
+                    </div>
+                    <div class="row mb-2">
+                        <label class="form-label d-flex justify-content-center fw-bold fs-5 mb-1" for="emailDel">Email</label>
+                        <input class="form-control d-flex justify-content-center" type="email" id="emailDel" name="email" disabled>
+                    </div>
+                    <div class="row mb-2">
+                        <label class="form-label d-flex justify-content-center fw-bold fs-5 mb-1" for="passwordDel">Password</label>
+                        <input class="form-control d-flex justify-content-center" type="password" id="passwordDel" name="password" disabled>
+                    </div>
+                    <div class="row mb-2">
+                        <label class="form-label d-flex justify-content-center fw-bold fs-5 mb-1" for="selectDelRoles">Role</label>
+                        <select class="form-select" aria-label="Default select" size="2" name="roles" multiple id="selectDelRoles" disabled></select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="buttonDelFormClose" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                <input form="formDeleteUser" class="btn btn-danger" type="submit" value="Delete">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+<script src="main.js"></script>
 </body>
 </html>

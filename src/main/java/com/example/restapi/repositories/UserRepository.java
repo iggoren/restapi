@@ -7,7 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User,Long> {
-    @Query("select u from User u join fetch u.roles where u.email=:email")
+    @Query("select u from User u join fetch u.userRoles where u.email=:email")
     Optional<User> findByEmail(String email);
 
+    User findByFirstName(String username);
 }

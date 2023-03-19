@@ -15,5 +15,5 @@ public interface UserService {
     void delete(long id);
 
 
-
+    User findUserByName(String name);
 }
