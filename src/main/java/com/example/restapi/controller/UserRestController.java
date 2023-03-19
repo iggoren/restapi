@@ -59,7 +59,7 @@ public class UserRestController {
 
     }
 
-    @DeleteMapping("/id")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable("id") Long id){
         userService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
