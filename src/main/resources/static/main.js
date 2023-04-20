@@ -221,3 +221,9 @@ async function showEditModal(id) {
         })
 }
 
+var syncButton = document.getElementById('setup-calendar-connection');
+syncButton.addEventListener('click', function() {
+    fetch("/oauth2/google/auth-url")
+        .then(response=>response.json())
+        .then(data=>window.location.href=data.authUrl)
+        .catch(err=>console.log(err));})

@@ -14,6 +14,21 @@ public class OauthController {
     private String callbackUrl = "http://localhost:8082/login/oauth2/code/google";
 
 
+
+//        private static HttpTransport httpTransport;
+//        private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+
+        @GetMapping("/google/auth-url")
+        @ResponseBody
+        public String getGoogleAuthUrl() {
+
+
+
+            String authorizationUrl = service.getAuthorizationUrl();
+            return "{\"authUrl\": \"" + authorizationUrl + "\"}";
+        }
+
+
     OAuth20Service service = new ServiceBuilder(clientId)
             .apiSecret(clientSecret)
             .callback(callbackUrl)
