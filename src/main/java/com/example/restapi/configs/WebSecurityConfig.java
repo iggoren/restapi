@@ -47,10 +47,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().successHandler(successUserHandler)
                 .permitAll()
                 .and()
-                .logout()
-                .and()
-                .oauth2Login()
-                .userInfoEndpoint(userInfo -> userInfo.oidcUserService(oidcUserService()));
+                .logout();
+           //     .and()
+            //    .oauth2Login()
+            //    .userInfoEndpoint(userInfo -> userInfo.oidcUserService(oidcUserService()));
         ;
     }
 
