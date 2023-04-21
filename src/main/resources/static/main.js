@@ -221,9 +221,43 @@ async function showEditModal(id) {
         })
 }
 
-var syncButton = document.getElementById('setup-calendar-connection');
-syncButton.addEventListener('click', function() {
-    fetch("/oauth2/google/auth-url")
-        .then(response=>response.json())
-        .then(data=>window.location.href=data.authUrl)
-        .catch(err=>console.log(err));})
+
+// При загрузке страницы
+// window.addEventListener('load', function() {
+//     // Находим элементы на странице
+//     var calendarSelect = document.getElementById('calendarSelect');
+//      var selectCalendarButton = document.getElementById('getCalendarList');
+//
+//     // Обработчик нажатия кнопки "Выбрать"
+//     selectCalendarButton.addEventListener('click', function() {
+//         // Получаем выбранный календарь
+//         var selectedCalendar = calendarSelect.value;
+//         // Делаем что-то с выбранным календарем
+//         console.log(selectedCalendar);
+//         // Закрываем модальное окно
+//         $('#calendarModal').modal('hide');
+//     });
+
+    // // Обработчик открытия модального окна
+    // $('#calendarModal').on('show.bs.modal', function(event) {
+    //     // Получаем список календарей
+    //     fetch('/calendars')
+    //         .then(function(response) {
+    //             return response.json();
+    //         })
+    //         .then(function(data) {
+    //             // Очищаем список календарей
+    //             calendarSelect.innerHTML = '';
+    //             // Добавляем в список каждый календарь
+    //             data.forEach(function(calendar) {
+    //                 var option = document.createElement('option');
+    //                 option.value = calendar.id;
+    //                 option.text = calendar.summary;
+    //                 calendarSelect.appendChild(option);
+    //             });
+    //         })
+    //         .catch(function(error) {
+    //             console.error(error);
+    //         });
+    // });
+

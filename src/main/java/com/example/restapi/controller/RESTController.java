@@ -70,12 +70,12 @@ public class RESTController {
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/user/auth")
-    public ResponseEntity<User> printAuthUser(Principal principal) {
-        User userByName = userService.findUserByName(principal.getName());
- //
-        return new ResponseEntity<>(userByName, HttpStatus.OK);
-    }
+//    @GetMapping("/user/auth")
+//    public ResponseEntity<User> printAuthUser(Principal principal) {
+//        User userByName = userService.findUserByName(principal.getName());
+// //
+//        return new ResponseEntity<>(userByName, HttpStatus.OK);
+//    }
 
     @GetMapping("admin/roles")
     public ResponseEntity<List<Role>> getAllRoles() {
