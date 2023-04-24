@@ -17,6 +17,7 @@ import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.web.client.RestTemplate;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -97,5 +98,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .callback(callbackUrl)
                 .defaultScope("https://www.googleapis.com/auth/calendar")
                 .build(GoogleApi20.instance());
+    }
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 }

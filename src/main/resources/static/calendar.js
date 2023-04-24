@@ -6,34 +6,7 @@ syncButton.addEventListener('click', function () {
         .catch(err => console.log(err));
 })
 
-// document.getElementById("getCalendarList").addEventListener("click", function() {
-//     fetch("/callback/calendars")
-//         .then(function(response) {
-//             console.log(response);
-//             return response.json();
-//
-//         })
-//         .then(function(calendars) {
-//             var modalBody = document.getElementById('calendarModal');
-//
-//             modalBody.innerHTML = "";
-//             calendars.forEach(function(calendar) {
-//                 var radio = document.createElement("input");
-//                 radio.type = "radio";
-//                 radio.name = "calendar";
-//                 radio.value = calendar.id;
-//                 modalBody.appendChild(radio);
-//
-//                 var label = document.createElement("label");
-//                 label.innerHTML = calendar.summary;
-//                 modalBody.appendChild(label);
-//
-//                 modalBody.appendChild(document.createElement("br"));
-//             });
-//
-//             $("#calendarModal").modal("show");
-//         });
-// });
+
 // При нажатии на кнопку, отправляем GET запрос на /calendars, получаем список календарей и отображаем их в модальном окне
 const selectCalendarButton = document.getElementById("getCalendarList");
 const calendarSelect = document.getElementById("calendarSelect");
@@ -61,43 +34,32 @@ selectCalendarButton.addEventListener("click", function() {
     // делаем что-то с выбранным календарем
 });
 
-
-// let btnList = document.getElementById('getCalendarList');
-// btnList.addEventListener('click', function() {
-//   console.log("клик")
-//     fetch("/callback/calendars")
-//         .then(response=>response.json())
-//
-// })
-
-// $(function () {
-//     $('#getCalendarList').click(function () {
-//
-//         $.get("/callback/calendars", function (calendars) {
-//             var modalBody = $("#calendarModal.modal-body");
-//             modalBody.empty();
-//             $.each(calendars, function (i, calendar) {
-//                 modalBody.append("<div><input type='radio' name='calendar' value='" + calendar.id + "'> " + calendar.summary + "</div>");
-//             });
-//             $("#calendarModal").modal("show");
-//         });
-//
-//     })
-// })
+// Отправка события Post на календарь
+const form = document.getElementById('eventForm');
+form.addEventListener('submit', async (event) => {
+    event.preventDefault();
 
 
+    const formData = new FormData(form);
+    const eventData = {
+        summary: formData.get('summary'),
+        description: formData.get('description'),
+        start: { dateTime: formData.get('start') },
+        end: { dateTime: formData.get('end') },
+    };
 
+    // Send a POST request to the API endpoint
+    const calendarId = 'primary'; // Replace with the actual calendar ID
+    const response = await fetch(`callback/calendars/${calendarId}/events`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(eventData),
+    });
 
-// $(function() {
-//     $('getCalendarList').click(function() {
-//         console.log("click")
-//         $.get("/callback/calendars", function(calendars) {
-//             var modalBody = $("#calendarModal.modal-body");
-//             modalBody.empty();
-//             $.each(calendars, function(i, calendar) {
-//                 modalBody.append("<div><input type='radio' name='calendar' value='" + calendar.id + "'> " + calendar.summary + "</div>");
-//             });
-//             $("#calendarModal").modal("show");
-//         });
-//     });
-// });
+    // Check the response status and display a message
+    if (response.ok) {
+        alert('Event added to calendar!');
+    } else {
+        alert('Error adding event to calendar!');
+    }
+});

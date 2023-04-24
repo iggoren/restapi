@@ -10,6 +10,7 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.CalendarList;
 import com.google.api.services.calendar.model.CalendarListEntry;
@@ -27,6 +28,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -37,7 +39,7 @@ public class GoogleCallbackController {
     private String clientSecret = "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";
     private String callbackUrl = "http://localhost:8082/callback";
     private static HttpTransport httpTransport;
-    private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
+    private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static com.google.api.services.calendar.Calendar calendar;
     private final OAuth20Service service;
     private final UserService userService;
@@ -46,6 +48,7 @@ public class GoogleCallbackController {
         this.service = service;
         this.userService = userService;
     }
+
 
     @GetMapping
     public RedirectView handleGoogleCallback(HttpServletRequest request) throws IOException, ExecutionException, InterruptedException {
@@ -108,31 +111,40 @@ public class GoogleCallbackController {
         // Получаем credential из HttpSession
         Credential credential = (Credential) request.getSession().getAttribute("credential");
         httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-        // Создаем экземпляр Calendar API
+        // Создаем экземпляр Calendar
         calendar = new com.google.api.services.calendar.Calendar.Builder(
                 httpTransport, JSON_FACTORY, credential)
                 .setApplicationName("testGoogleCalendar")
                 .build();
 
         // Создаем новое событие и устанавливаем его параметры
-        com.google.api.services.calendar.model.Event calendarEvent = new com.google.api.services.calendar.model.Event();
+        Event calendarEvent = new Event();
         calendarEvent.setSummary(event.getSummary());
         calendarEvent.setDescription(event.getDescription());
 
 
-        DateTime startDateTime = new DateTime(event.getStart().getDateTime().toString());
-        //DateTime startDateTime = new DateTime("2023-04-20T09:00:00-07:00");
-        EventDateTime start = new EventDateTime()
-                .setDateTime(startDateTime)
-                .setTimeZone("UTC");
-        calendarEvent.setStart(start);
-
-          DateTime endDateTime = new DateTime(event.getEnd().getDateTime().toString());
-        //DateTime endDateTime = new DateTime("2023-04-20T10:00:00-07:00");
+        //  DateTime endDateTime = new DateTime(event.getEnd().getDateTime().toString());
+        DateTime endDateTime = DateTime.parseRfc3339("2023-04-22T12:00:00.000Z");
         EventDateTime end = new EventDateTime()
                 .setDateTime(endDateTime)
                 .setTimeZone("UTC");
         calendarEvent.setEnd(end);
+
+       // DateTime startDateTime = new DateTime(event.getStart().getDateTime().toString());
+        java.util.Calendar startCal = java.util.Calendar.getInstance();
+        startCal.set(java.util.Calendar.MONTH, 11);
+        startCal.set(java.util.Calendar.DATE, 26);
+        startCal.set(java.util.Calendar.HOUR_OF_DAY, 9);
+        startCal.set(java.util.Calendar.MINUTE, 0);
+        Date startDate = startCal.getTime();
+        DateTime startDateTime = new DateTime(startDate);
+       // DateTime startDateTime = DateTime.parseRfc3339("2023-04-20T09:00:00-07:00");
+        EventDateTime start = new EventDateTime()
+                .setDateTime(startDateTime)
+                .setTimeZone("UTC");
+      //  calendarEvent.setStart(start);
+
+
 
         // Отправляем событие в календарь
         calendar.events().insert(calendarId, calendarEvent).execute();

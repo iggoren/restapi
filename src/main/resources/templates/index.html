@@ -30,7 +30,18 @@
             <button type="button" id="getCalendarList" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#calendarModal">
                 Получить список календарей
             </button>
-
+            <h5>Добавление события календаря</h5>
+            <form id="eventForm">
+                <label for="summary">Название:</label>
+                <input type="text" id="summary" name="summary" required><br>
+                <label for="description">Описание:</label>
+                <input type="text" id="description" name="description"><br>
+                <label for="start">Начало:</label>
+                <input type="datetime-local" id="start" name="start" required><br>
+                <label for="end">Конец:</label>
+                <input type="datetime-local" id="end" name="end" required><br>
+                <input type="submit" value="Добавить">
+            </form>
         </nav>
         <div class="tab-content w-100" id="pills-tabContent">
             <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
