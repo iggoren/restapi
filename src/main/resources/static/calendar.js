@@ -8,8 +8,9 @@ syncButton.addEventListener('click', function () {
 
 
 // При нажатии на кнопку, отправляем GET запрос на /calendars, получаем список календарей и отображаем их в модальном окне
-const selectCalendarButton = document.getElementById("getCalendarList");
+const selectCalendarButton = document.getElementById("selectCalendarButton");
 const calendarSelect = document.getElementById("calendarSelect");
+
 
 document.getElementById("getCalendarList").addEventListener("click", function() {
     fetch("/callback/calendars")
@@ -31,6 +32,8 @@ document.getElementById("getCalendarList").addEventListener("click", function() 
 
 selectCalendarButton.addEventListener("click", function() {
     const selectedCalendarId = calendarSelect.value;
+    modal.style.display = 'none';
+    console.log(selectedCalendarId);
     // делаем что-то с выбранным календарем
 });
 
@@ -44,8 +47,9 @@ form.addEventListener('submit', async (event) => {
     const eventData = {
         summary: formData.get('summary'),
         description: formData.get('description'),
-        start: { dateTime: formData.get('start') },
-        end: { dateTime: formData.get('end') },
+       //  start: { dateTime: formData.get('start') }
+
+        // end: { dateTime: formData.get('end') },
     };
 
     // Send a POST request to the API endpoint

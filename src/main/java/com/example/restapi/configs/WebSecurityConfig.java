@@ -96,7 +96,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return  new ServiceBuilder(clientId)
                 .apiSecret(clientSecret)
                 .callback(callbackUrl)
-                .defaultScope("https://www.googleapis.com/auth/calendar")
+                .defaultScope("https://www.googleapis.com/auth/calendar") //заменить на Calendar.Google
                 .build(GoogleApi20.instance());
     }
     @Bean

@@ -16,6 +16,7 @@ import com.google.api.services.calendar.model.CalendarList;
 import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
+import org.springframework.boot.jackson.JsonComponent;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,7 +38,7 @@ import java.util.concurrent.ExecutionException;
 public class GoogleCallbackController {
     private String clientId = "823444065671-s81c2u14s4bc5src79g91aqtmhgjh5ug.apps.googleusercontent.com";
     private String clientSecret = "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";
-    private String callbackUrl = "http://localhost:8082/callback";
+    //  private String callbackUrl = "http://localhost:8082/callback";
     private static HttpTransport httpTransport;
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static com.google.api.services.calendar.Calendar calendar;
@@ -96,14 +97,14 @@ public class GoogleCallbackController {
 
         return ResponseEntity.ok(calendars);
     }
+
     @PostMapping("/calendars")
-    public ResponseEntity<String> saveCalendar(){
-   //     userService.update();
+    public ResponseEntity<String> saveCalendar() {
+        //     userService.update();
 
 
         return ResponseEntity.ok().build();
     }
-
 
 
     @PostMapping("/calendars/{calendarId}/events")
@@ -122,28 +123,20 @@ public class GoogleCallbackController {
         calendarEvent.setSummary(event.getSummary());
         calendarEvent.setDescription(event.getDescription());
 
+        // DateTime startDateTime = new DateTime(event.getStart().getDateTime().toString());
+        DateTime startDateTime = new DateTime("2023-04-25T10:00:00.000");
+        EventDateTime start = new EventDateTime()
+                .setDateTime(startDateTime)
+                .setTimeZone("UTC");
+        calendarEvent.setStart(start);
 
-        //  DateTime endDateTime = new DateTime(event.getEnd().getDateTime().toString());
-        DateTime endDateTime = DateTime.parseRfc3339("2023-04-22T12:00:00.000Z");
+
+        //DateTime endDateTime = new DateTime(event.getEnd().getDateTime().toString());
+        DateTime endDateTime = DateTime.parseRfc3339("2023-04-25T11:00:00.000");
         EventDateTime end = new EventDateTime()
                 .setDateTime(endDateTime)
                 .setTimeZone("UTC");
         calendarEvent.setEnd(end);
-
-       // DateTime startDateTime = new DateTime(event.getStart().getDateTime().toString());
-        java.util.Calendar startCal = java.util.Calendar.getInstance();
-        startCal.set(java.util.Calendar.MONTH, 11);
-        startCal.set(java.util.Calendar.DATE, 26);
-        startCal.set(java.util.Calendar.HOUR_OF_DAY, 9);
-        startCal.set(java.util.Calendar.MINUTE, 0);
-        Date startDate = startCal.getTime();
-        DateTime startDateTime = new DateTime(startDate);
-       // DateTime startDateTime = DateTime.parseRfc3339("2023-04-20T09:00:00-07:00");
-        EventDateTime start = new EventDateTime()
-                .setDateTime(startDateTime)
-                .setTimeZone("UTC");
-      //  calendarEvent.setStart(start);
-
 
 
         // Отправляем событие в календарь
