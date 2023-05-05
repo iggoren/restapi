@@ -1,8 +1,8 @@
 var syncButton = document.getElementById('setup-calendar-connection');
 syncButton.addEventListener('click', function () {
-    fetch("/oauth2/google/auth-url")
-        .then(response => response.json())
-        .then(data => window.location.href = data.authUrl)
+    fetch("callback/google/auth-url")
+        .then(response => response.text())
+        .then(authUrl => window.location.href = authUrl)
         .catch(err => console.log(err));
 })
 
@@ -32,9 +32,29 @@ document.getElementById("getCalendarList").addEventListener("click", function() 
 
 selectCalendarButton.addEventListener("click", function() {
     const selectedCalendarId = calendarSelect.value;
-    modal.style.display = 'none';
-    console.log(selectedCalendarId);
-    // делаем что-то с выбранным календарем
+
+
+    //modal.style.display = "none";
+
+    // Send POST request to server
+    fetch(`/callback/saveCalendarId?calendarId=${selectedCalendarId}`, {
+        method: 'POST',
+
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => {
+            if (response.ok) {
+                console.log('Calendar ID saved successfully.');
+                // Refresh the page
+                location.reload();
+            } else {
+                console.error('Failed to save calendar ID.');
+            }
+        })
+        .catch(error => console.error(error));
+   // location.reload();
 });
 
 // Отправка события Post на календарь
@@ -47,14 +67,14 @@ form.addEventListener('submit', async (event) => {
     const eventData = {
         summary: formData.get('summary'),
         description: formData.get('description'),
-       //  start: { dateTime: formData.get('start') }
+         start: { dateTime: formData.get('start') },
 
-        // end: { dateTime: formData.get('end') },
+        end: { dateTime: formData.get('end') },
     };
 
     // Send a POST request to the API endpoint
-    const calendarId = 'primary'; // Replace with the actual calendar ID
-    const response = await fetch(`callback/calendars/${calendarId}/events`, {
+   // const calendarId = 'primary'; // Replace with the actual calendar ID
+    const response = await fetch(`callback/calendars/events`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(eventData),

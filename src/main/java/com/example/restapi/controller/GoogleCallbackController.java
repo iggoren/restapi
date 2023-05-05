@@ -1,35 +1,33 @@
 package com.example.restapi.controller;
 
+import com.example.restapi.model.User;
 import com.example.restapi.service.UserService;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 import com.github.scribejava.core.oauth.OAuth20Service;
+import com.google.api.client.auth.oauth2.BearerToken;
 import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.BasicAuthentication;
 import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.CalendarList;
 import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
-import org.springframework.boot.jackson.JsonComponent;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -39,38 +37,37 @@ public class GoogleCallbackController {
     private String clientId = "823444065671-s81c2u14s4bc5src79g91aqtmhgjh5ug.apps.googleusercontent.com";
     private String clientSecret = "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";
     //  private String callbackUrl = "http://localhost:8082/callback";
-    private static HttpTransport httpTransport;
-    private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-    private static com.google.api.services.calendar.Calendar calendar;
+    private HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    private final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
+    private com.google.api.services.calendar.Calendar calendar;
     private final OAuth20Service service;
     private final UserService userService;
 
-    public GoogleCallbackController(OAuth20Service service, UserService userService) {
+    public GoogleCallbackController(OAuth20Service service, UserService userService) throws GeneralSecurityException, IOException {
         this.service = service;
         this.userService = userService;
     }
 
 
+    @GetMapping("/google/auth-url")
+    public String getGoogleAuthUrl() {
+        return service.getAuthorizationUrl();
+    }
+
     @GetMapping
-    public RedirectView handleGoogleCallback(HttpServletRequest request) throws IOException, ExecutionException, InterruptedException {
+    public RedirectView handleGoogleCallback(HttpServletRequest request) throws IOException, ExecutionException, InterruptedException, GeneralSecurityException {
 
         String code = request.getParameter("code");
 
-        if (code == null) {
-            // Ошибка авторизации
-            // ...
-        }
-
-        // Выполняем необходимые действия для получения access token
         OAuth2AccessToken accessToken = service.getAccessToken(code);
-        // Создаем новый Credential объект
-        Credential credential = new GoogleCredential.Builder()
-                .setTransport(new NetHttpTransport())
+        //httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+        Credential credential = new Credential.Builder(BearerToken.authorizationHeaderAccessMethod())
+                .setTransport(httpTransport)
                 .setJsonFactory(JSON_FACTORY)
-                .setClientSecrets(clientId, clientSecret)
-                .build()
-                .setAccessToken(accessToken.getAccessToken())
-                .setRefreshToken(accessToken.getRefreshToken());
+                .setClientAuthentication(new BasicAuthentication(clientId, clientSecret))
+                .build();
+        credential.setAccessToken(accessToken.getAccessToken());
+        credential.setRefreshToken(accessToken.getRefreshToken());
 
         // Сохраняем credential в HttpSession
         request.getSession().setAttribute("credential", credential);
@@ -78,19 +75,16 @@ public class GoogleCallbackController {
         return new RedirectView("/admin");
     }
 
-
     @GetMapping("/calendars")
     public ResponseEntity<List<CalendarListEntry>> getCalendars(HttpServletRequest request) throws IOException, GeneralSecurityException {
         // Получаем credential из HttpSession
         Credential credential = (Credential) request.getSession().getAttribute("credential");
-        httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-        // Создаем экземпляр Calendar API
+
         calendar = new com.google.api.services.calendar.Calendar.Builder(
                 httpTransport, JSON_FACTORY, credential)
                 .setApplicationName("testGoogleCalendar")
                 .build();
 
-        // Получаем список календарей
         CalendarList calendarList = calendar.calendarList().list().execute();
         List<CalendarListEntry> calendars = calendarList.getItems();
 
@@ -98,21 +92,24 @@ public class GoogleCallbackController {
         return ResponseEntity.ok(calendars);
     }
 
-    @PostMapping("/calendars")
-    public ResponseEntity<String> saveCalendar() {
-        //     userService.update();
 
+    @PostMapping("/saveCalendarId")
+    public ResponseEntity<?> saveCalendarId(@RequestParam("calendarId") String calendarId) {
 
-        return ResponseEntity.ok().build();
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        user.setLastName(calendarId);
+        userService.update(user.getId(), user);
+
+        return ResponseEntity.ok("Calendar Id saved successfully.");
     }
 
 
-    @PostMapping("/calendars/{calendarId}/events")
-    public ResponseEntity<Void> postEventToCalendar(@PathVariable String calendarId, @RequestBody Event event, HttpServletRequest request) throws IOException, GeneralSecurityException {
+
+    @PostMapping("/calendars/events")
+    public ResponseEntity<Void> postEventToCalendar(@RequestBody Event event, HttpServletRequest request) throws IOException, GeneralSecurityException {
         // Получаем credential из HttpSession
         Credential credential = (Credential) request.getSession().getAttribute("credential");
-        httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-        // Создаем экземпляр Calendar
+
         calendar = new com.google.api.services.calendar.Calendar.Builder(
                 httpTransport, JSON_FACTORY, credential)
                 .setApplicationName("testGoogleCalendar")
@@ -123,23 +120,17 @@ public class GoogleCallbackController {
         calendarEvent.setSummary(event.getSummary());
         calendarEvent.setDescription(event.getDescription());
 
-        // DateTime startDateTime = new DateTime(event.getStart().getDateTime().toString());
-        DateTime startDateTime = new DateTime("2023-04-25T10:00:00.000");
         EventDateTime start = new EventDateTime()
-                .setDateTime(startDateTime)
+                .setDateTime(event.getStart().getDateTime())
                 .setTimeZone("UTC");
         calendarEvent.setStart(start);
 
-
-        //DateTime endDateTime = new DateTime(event.getEnd().getDateTime().toString());
-        DateTime endDateTime = DateTime.parseRfc3339("2023-04-25T11:00:00.000");
         EventDateTime end = new EventDateTime()
-                .setDateTime(endDateTime)
+                .setDateTime(event.getEnd().getDateTime())
                 .setTimeZone("UTC");
         calendarEvent.setEnd(end);
-
-
-        // Отправляем событие в календарь
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String calendarId = user.getLastName();
         calendar.events().insert(calendarId, calendarEvent).execute();
 
         return ResponseEntity.ok().build();
