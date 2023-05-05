@@ -97,7 +97,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private String clientId= "823444065671-s81c2u14s4bc5src79g91aqtmhgjh5ug.apps.googleusercontent.com";
 
     private String clientSecret  = "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";
-    private String callbackUrl = "http://localhost:8082/callback";
+    private String callbackUrl = "http://localhost:8082/api/oauth/callback/google";
     @Bean
     public OAuth20Service getService(){
         return  new ServiceBuilder(clientId)

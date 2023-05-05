@@ -1,11 +1,14 @@
-var syncButton = document.getElementById('setup-calendar-connection');
+
+
+
+
+var syncButton = document.getElementById('googleBtn');
 syncButton.addEventListener('click', function () {
-    fetch("callback/google/auth-url")
+    fetch("api/oauth/google/auth-url")
         .then(response => response.text())
         .then(authUrl => window.location.href = authUrl)
         .catch(err => console.log(err));
 })
-
 
 // При нажатии на кнопку, отправляем GET запрос на /calendars, получаем список календарей и отображаем их в модальном окне
 const selectCalendarButton = document.getElementById("selectCalendarButton");
@@ -13,7 +16,7 @@ const calendarSelect = document.getElementById("calendarSelect");
 
 
 document.getElementById("getCalendarList").addEventListener("click", function() {
-    fetch("/callback/calendars")
+    fetch("api/oauth/calendars")
         .then(response => response.json())
 
         .then(calendars => {
@@ -37,7 +40,7 @@ selectCalendarButton.addEventListener("click", function() {
     //modal.style.display = "none";
 
     // Send POST request to server
-    fetch(`/callback/saveCalendarId?calendarId=${selectedCalendarId}`, {
+    fetch(`api/oauth/saveCalendarId?calendarId=${selectedCalendarId}`, {
         method: 'POST',
 
         headers: {
@@ -74,7 +77,7 @@ form.addEventListener('submit', async (event) => {
 
     // Send a POST request to the API endpoint
    // const calendarId = 'primary'; // Replace with the actual calendar ID
-    const response = await fetch(`callback/calendars/events`, {
+    const response = await fetch(`api/oauth/calendars/events`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(eventData),

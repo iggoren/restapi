@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @RestController
-@RequestMapping("/callback")
+@RequestMapping("/api/oauth")
 public class GoogleCallbackController {
 
     private final HttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
@@ -48,11 +48,16 @@ public class GoogleCallbackController {
 
 
     @GetMapping("/google/auth-url")
-    public String getGoogleAuthUrl() {
+    public Object getGoogleAuthUrl() {
+
+//        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        if(!user.getEmail().contains("gmail")){
+//            return new RedirectView("/admin");
+//        }
         return service.getAuthorizationUrl();
     }
 
-    @GetMapping
+    @GetMapping("/callback/google")
     public RedirectView handleGoogleCallback(HttpServletRequest request) throws IOException, ExecutionException, InterruptedException {
 
         String code = request.getParameter("code");
@@ -116,6 +121,8 @@ public class GoogleCallbackController {
         Credential credential = (Credential) request.getSession().getAttribute("credential");
 
         extracted(credential);
+
+
 
         // Создаем новое событие и устанавливаем его параметры
         Event calendarEvent = new Event();

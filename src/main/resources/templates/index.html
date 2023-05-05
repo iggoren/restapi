@@ -29,15 +29,32 @@
                aria-controls="pills-home" aria-selected="true">Admin</a>
             <a class="nav-link fs-5" id="pills-profile-tab" data-bs-toggle="pill" href="#pills-profile" role="tab"
                aria-controls="pills-profile" aria-selected="false">User</a>
-            <button class="btn-dark" id="setup-calendar-connection">Настроить соединение с календарем</button>
-<!--            <div id="modalCalendar" class="modal">-->
-<!--                <div class="modal-content">-->
-<!--                    <span class="close">&times;</span>-->
-<!--                    <p>Выберите календарь:</p>-->
-<!--                    <button id="google-calendar">Google Календарь</button>-->
-<!--                    <button id="yandex-calendar">Яндекс Календарь</button>-->
-<!--                </div>-->
-<!--            </div>-->
+<!--            <button class="btn-dark" id="setup-calendar-connection">Настроить соединение с календарем</button>-->
+            <div class="container">
+                <h1>Выберите провайдера календаря</h1>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#providerModal">Настроить подключение к календарю</button>
+                <div class="modal fade" id="providerModal" tabindex="-1" role="dialog" aria-labelledby="providerModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="providerModalLabel">Выберите провайдера календаря</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-secondary" id="googleBtn">Google</button>
+                                    <button type="button" class="btn btn-secondary" id="yandexBtn">Яндекс</button>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- Button trigger modal -->
             <button type="button" id="getCalendarList" class="btn btn-primary" data-bs-toggle="modal"
                     data-bs-target="#calendarModal">
@@ -357,7 +374,9 @@
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
         crossorigin="anonymous"></script>
 <!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>-->
-
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
 <script src="main.js"></script>
 <script src="calendar.js"></script>

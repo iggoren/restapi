@@ -8,7 +8,7 @@ $(async function () {
 });
 
 async function getAuthUser() {
-    fetch("http://localhost:8082/user/auth")
+    fetch("user/auth")
         .then(response => response.json())
         .then(data => {
             $('#userMail').append(data.email);
@@ -29,7 +29,7 @@ async function getAuthUser() {
 async function getAllUser() {
     const table = $('#usersTable');
     table.empty();
-    fetch("http://localhost:8082/admin/all")
+    fetch("admin/all")
         .then(response => response.json())
         .then(dataUsers => {
             dataUsers.forEach(user => {
@@ -57,13 +57,13 @@ async function getAllUser() {
 }
 
 async function getUser(id) {
-    let url = "http://localhost:8082/admin/" + id;
+    let url = "admin/" + id;
     let response = await fetch(url);
     return await response.json();
 }
 
 async function getRolesOption() {
-    await fetch("http://localhost:8082/admin/roles")
+    await fetch("admin/roles")
         .then(response => response.json())
         .then(roles => {
             roles.forEach(role => {
@@ -92,7 +92,7 @@ async function newUser() {
             })
         }
 
-        fetch("http://localhost:8082/admin/all", {
+        fetch("admin/all", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -117,7 +117,7 @@ function removeUser(){
     const deleteForm = document.forms["formDeleteUser"];
     deleteForm.addEventListener("submit", ev => {
         ev.preventDefault();
-        fetch("http://localhost:8080/admin/del/" + deleteForm.id.value, {
+        fetch("admin/del/" + deleteForm.id.value, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -169,7 +169,7 @@ function updateUser() {
             })
         }
 
-        fetch("http://localhost:8082/admin/update/" + editForm.editId.value, {
+        fetch("admin/update/" + editForm.editId.value, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -209,7 +209,7 @@ async function showEditModal(id) {
 
     $('#selectUpdateRoles').empty();
 
-    await fetch("http://localhost:8082/admin/roles")
+    await fetch("admin/roles")
         .then(response => response.json())
         .then(roles => {
             roles.forEach(role => {
