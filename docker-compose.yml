@@ -1,0 +1,30 @@
+version: '3.1'
+services:
+  postgres:
+    image: 'postgres:12'
+    container_name: 'rest-postgres'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - .:/var/lib/postgresql/
+
+#  app:
+#    build: ./
+#    container_name: 'java-app'
+#    ports:
+#      - 8080:8080
+
+#version: "3.9"
+#services:
+#  postgres:
+#    image: postgres:13
+#    environment:
+#      POSTGRES_DB: "mdb"
+#      POSTGRES_USER: "root"
+#      POSTGRES_PASSWORD: "123"
+#    ports:
+#      - "5432:5432"
